@@ -1,20 +1,20 @@
 # bot-sprinttrack
 
-Layanan WhatsApp Bot untuk sistem manajemen sprint **SprintTrack Abinara-1** (Tim Robotik Abinara ITS). Repositori ini merupakan starter template berbasis TypeScript dan `@whiskeysockets/baileys` yang menyediakan inisialisasi koneksi WhatsApp, autentikasi QR melalui terminal, penyimpanan sesi lokal, serta kerangka penanganan perintah chat (`update`, `log`, dan `help`).
+Layanan WhatsApp Bot untuk sistem manajemen sprint **SprintTrack Abinara-1** (Tim Robotik Abinara ITS). Repositori ini merupakan starter template berbasis TypeScript dan [whatsapp-web.js](https://wwebjs.dev/) yang menyediakan inisialisasi koneksi WhatsApp Web via Puppeteer, autentikasi QR code melalui terminal, penyimpanan sesi lokal (`LocalAuth`), serta kerangka penanganan perintah chat (`update`, `log`, dan `help`).
 
 ## Prasyarat
 
 - Node.js v18 atau lebih baru
 - npm v9 atau lebih baru
+- Google Chrome atau Chromium terpasang di sistem (dibutuhkan oleh Puppeteer)
 - Akun WhatsApp aktif untuk memindai QR code saat autentikasi awal
 
 ## Teknologi Utama
 
 - TypeScript
 - Node.js
-- `@whiskeysockets/baileys`
+- `whatsapp-web.js`
 - `qrcode-terminal`
-- `pino`
 - `dotenv`
 
 ## Instalasi dan Menjalankan Proyek
@@ -52,7 +52,7 @@ Layanan WhatsApp Bot untuk sistem manajemen sprint **SprintTrack Abinara-1** (Ti
    npm run dev
    ```
 
-5. Pindai QR code yang muncul di terminal menggunakan fitur Perangkat Tertaut (Linked Devices) pada aplikasi WhatsApp. Setelah berhasil terhubung, sesi akan tersimpan otomatis pada direktori `auth_info`.
+5. Pindai QR code yang muncul di terminal menggunakan fitur Perangkat Tertaut (Linked Devices) pada aplikasi WhatsApp. Sesi akan otomatis disimpan pada folder `.wwebjs_auth` sehingga tidak perlu scan ulang setiap kali aplikasi dimulai ulang.
 
 6. Untuk menjalankan versi produksi:
 
@@ -72,7 +72,7 @@ bot-sprinttrack/
 ├── README.md             # Dokumentasi proyek
 └── src/
     ├── index.ts          # Entry point untuk menjalankan layanan bot
-    ├── bot.ts            # Inisialisasi koneksi Baileys, QR code, dan listener pesan
+    ├── bot.ts            # Inisialisasi client whatsapp-web.js, QR code, dan listener pesan
     ├── commands.ts       # Kerangka router dan handler perintah chat (update, log, help)
     ├── config.ts         # Pembaca konfigurasi environment (.env)
     └── types.ts          # Definisi tipe data perintah dan status tugas
