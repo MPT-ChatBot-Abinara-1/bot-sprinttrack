@@ -105,6 +105,25 @@ async function safe(reply: (t: string) => Promise<void>, fn: () => Promise<void>
   }
 }
 
+export const HELP_MESSAGE = [
+  '🤖 *SprintTrack Abinara Bot*',
+  'Aplikasi Manajemen Sprint Tim Robotik Abinara-1',
+  '',
+  'Daftar Perintah:',
+  '• *update <id_tugas> <status>*',
+  '  Contoh: update T-101 in_progress',
+  '  Pilihan status: todo, in_progress, review, done',
+  '• *log <id_tugas> <pesan_aktivitas>*',
+  '  Contoh: log T-101 selesai merakit sensor api',
+  '• *help* : Menampilkan menu panduan ini',
+  '• *ping* : Cek status respons bot',
+].join('\n');
+
+export const PING_RESPONSE = '🏓 Pong! Bot aktif dan terhubung ke server SprintTrack.';
+
+export const UNKNOWN_COMMAND_RESPONSE =
+  '❓ Perintah tidak dikenali. Ketik *help* untuk melihat daftar format perintah yang didukung.';
+
 export async function handleCommand(ctx: BotCommandContext): Promise<void> {
   const { command, args, reply, sender } = ctx;
   const phone = phoneFromJid(sender);
@@ -159,31 +178,11 @@ export async function handleCommand(ctx: BotCommandContext): Promise<void> {
   switch (command) {
     case 'help':
     case 'bantuan':
-      await reply(
-        `*SPRINTTRACK ABINARA-1*\n` +
-          `Layanan Manajemen Sprint Tim Robotik ITS\n` +
-          `──────────────────────────────\n\n` +
-          `*MENU NAVIGASI CEPAT:*\n` +
-          `┌─────────────────────────────┐\n` +
-          `│  [1] Cek Board Tugas Aktif  │\n` +
-          `│  [2] Update Status Tugas    │\n` +
-          `│  [3] Catat Log Aktivitas    │\n` +
-          `│  [4] Tampilkan Bantuan Ini  │\n` +
-          `└─────────────────────────────┘\n` +
-          `_Ketik angka 1, 2, 3, atau 4 untuk memilih menu._\n\n` +
-          `*PANDUAN PERINTAH LENGKAP:*\n\n` +
-          `• *tugas*\n` +
-          `  Menampilkan papan Kanban sprint aktif.\n\n` +
-          `• *update <ID> <status>*\n` +
-          `  Memindahkan kartu tugas ke kolom lain.\n` +
-          `  Pilihan: \`todo\`, \`in_progress\`, \`review\`, \`done\`\n` +
-          `  _Contoh:_ \`update T-1 in_progress\`\n\n` +
-          `• *log <ID> <catatan>*\n` +
-          `  Menyimpan catatan progres ke database tugas.\n` +
-          `  _Contoh:_ \`log T-1 Selesai kalibrasi motor\`\n\n` +
-          `──────────────────────────────\n` +
-          `Gunakan teks dalam tanda \`code\` di atas (bisa di-tap langsung di HP) untuk kemudahan eksekusi.`,
-      );
+      await reply(HELP_MESSAGE);
+      break;
+
+    case 'ping':
+      await reply(PING_RESPONSE);
       break;
 
     case 'tugas':
@@ -326,19 +325,7 @@ export async function handleCommand(ctx: BotCommandContext): Promise<void> {
     }
 
     default:
-      await reply(
-        `*PERINTAH TIDAK DIKENALI*\n` +
-          `──────────────────────────────\n` +
-          `Perintah yang Anda masukkan tidak terdaftar.\n\n` +
-          `*PILIH MENU CEPAT:*\n` +
-          `┌─────────────────────────────┐\n` +
-          `│  [1] Lihat Tugas Aktif      │\n` +
-          `│  [2] Update Status Tugas    │\n` +
-          `│  [3] Catat Log Aktivitas    │\n` +
-          `│  [4] Pusat Bantuan          │\n` +
-          `└─────────────────────────────┘\n` +
-          `_Ketik angka 1, 2, 3, atau 4 untuk memilih._`,
-      );
+      await reply(UNKNOWN_COMMAND_RESPONSE);
       break;
   }
 }

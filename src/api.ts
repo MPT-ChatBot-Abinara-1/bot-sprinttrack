@@ -21,7 +21,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
       ...init,
       headers: {
         'Content-Type': 'application/json',
-        'x-bot-key': config.botApiKey,
+        'x-bot-api-key': config.botApiKey,
       },
       signal: AbortSignal.timeout(8000),
     });

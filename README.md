@@ -1,6 +1,6 @@
 # bot-sprinttrack
 
-Layanan WhatsApp Bot untuk sistem manajemen sprint **SprintTrack Abinara-1** (Tim Robotik Abinara ITS). Repositori ini merupakan starter template berbasis TypeScript dan [whatsapp-web.js](https://wwebjs.dev/) yang menyediakan inisialisasi koneksi WhatsApp Web via Puppeteer, autentikasi QR code melalui terminal, penyimpanan sesi lokal (`LocalAuth`), serta kerangka penanganan perintah chat (`update`, `log`, dan `help`).
+Layanan WhatsApp Bot untuk sistem manajemen sprint **SprintTrack Abinara-1** (Tim Robotik Abinara ITS). Repositori ini berbasis TypeScript dan [whatsapp-web.js](https://wwebjs.dev/) yang menyediakan inisialisasi koneksi WhatsApp Web via Puppeteer, autentikasi QR code melalui terminal, penyimpanan sesi lokal (`LocalAuth`), auto-reconnect saat terputus, pencatatan log error ke file, serta penanganan perintah chat (`update`, `log`, `tugas`, `help`, `bantuan`, dan `ping`).
 
 ## Prasyarat
 
@@ -72,8 +72,10 @@ bot-sprinttrack/
 ├── README.md             # Dokumentasi proyek
 └── src/
     ├── index.ts          # Entry point untuk menjalankan layanan bot
-    ├── bot.ts            # Inisialisasi client whatsapp-web.js, QR code, dan listener pesan
-    ├── commands.ts       # Kerangka router dan handler perintah chat (update, log, help)
+    ├── bot.ts            # Inisialisasi client whatsapp-web.js, lifecycle sesi, dan dispatcher pesan
+    ├── commands.ts       # Router dan handler perintah chat (update, log, tugas, help, bantuan, ping)
+    ├── api.ts            # Integrasi HTTP ke backend SprintTrack dengan header x-bot-api-key
+    ├── logger.ts         # Utilitas logging konsol dan file log error
     ├── config.ts         # Pembaca konfigurasi environment (.env)
     └── types.ts          # Definisi tipe data perintah dan status tugas
 ```
@@ -86,3 +88,4 @@ bot-sprinttrack/
 | `npm run build` | Mengompilasi TypeScript ke JavaScript di direktori `dist/` |
 | `npm run start` | Menjalankan hasil build produksi dari `dist/index.js` |
 | `npm run typecheck` | Memeriksa validitas tipe TypeScript tanpa menghasilkan file output |
+| `npm test` | Menjalankan unit test untuk lifecycle bot, dispatcher pesan, dan perintah |
