@@ -41,6 +41,14 @@ export interface TaskSummary {
   status: string;
   priority?: string;
   deadline?: string | null;
+  division?: string;
+  assignee?: { name: string } | null;
+  userStory?: {
+    title: string;
+    sprint?: { name: string } | null;
+  } | null;
+  previousStatus?: string;
+  message?: string;
 }
 
 export const api = {
