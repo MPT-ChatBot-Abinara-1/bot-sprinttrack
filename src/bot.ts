@@ -11,6 +11,7 @@ export function createBot(): pkg.Client {
     }),
     puppeteer: {
       headless: true,
+      protocolTimeout: 120_000,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     },
   });
