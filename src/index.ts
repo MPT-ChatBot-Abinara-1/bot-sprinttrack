@@ -1,30 +1,27 @@
-import { startBot } from './bot.js';
+import { startBot, stopBot } from './bot.js';
+import { logger } from './logger.js';
 
-console.log('Memulai SprintTrack WhatsApp Bot...');
-
-let botClient: Awaited<ReturnType<typeof startBot>> | null = null;
+logger.info('Memulai SprintTrack WhatsApp Bot...');
 
 async function main() {
-  botClient = await startBot();
+  await startBot();
 }
 
 async function shutdown(signal: string) {
-  console.log(`\nMenerima sinyal ${signal}, mematikan bot...`);
-  if (botClient) {
-    try {
-      await botClient.destroy();
-      console.log('Bot berhasil dihentikan.');
-    } catch {
-      // abaikan error saat shutdown
-    }
-  }
+  logger.info(`\nMenerima sinyal ${signal}, mematikan bot...`);
+  await stopBot();
+  logger.info('Bot berhasil dihentikan.');
   process.exit(0);
 }
 
-process.on('SIGINT', () => shutdown('SIGINT'));
-process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => {
+  void shutdown('SIGINT');
+});
+process.on('SIGTERM', () => {
+  void shutdown('SIGTERM');
+});
 
 main().catch((err) => {
-  console.error('Gagal menjalankan bot:', err);
+  logger.error('Gagal menjalankan bot', err);
   process.exit(1);
 });
