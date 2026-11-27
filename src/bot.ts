@@ -26,7 +26,7 @@ export function createBot(): pkg.Client {
         '--disable-extensions',
         '--disable-gpu',
         '--disable-accelerated-2d-canvas',
-        '--disable-features=IsolateOrigins,site-per-process',
+        '--disable-features=IsolateOrigins,site-per-process,AsyncDns',
         '--disable-site-isolation-trials',
       ],
     },
@@ -128,9 +128,47 @@ function cleanupSessionLocks() {
   }
 }
 
-export async function startBot(): Promise<pkg.Client> {
-  cleanupSessionLocks();
-  const client = createBot();
-  await client.initialize();
-  return client;
+export async function startBot(maxRetries = 5, retryDelayMs = 5000): Promise<pkg.Client> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    cleanupSessionLocks();
+    const client = createBot();
+
+    try {
+      await client.initialize();
+      return client;
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      console.warn(`[Peringatan] Percobaan inisialisasi bot ke-${attempt} gagal: ${errMsg}`);
+
+      try {
+        await client.destroy();
+      } catch {
+        // abaikan error saat destroy
+      }
+
+      cleanupSessionLocks();
+
+      const isNetworkError =
+        errMsg.includes('ERR_NAME_NOT_RESOLVED') ||
+        errMsg.includes('ERR_INTERNET_DISCONNECTED') ||
+        errMsg.includes('ERR_CONNECTION_TIMED_OUT') ||
+        errMsg.includes('ERR_NETWORK_CHANGED') ||
+        errMsg.includes('Navigation timeout');
+
+      if (attempt < maxRetries) {
+        const waitTime = retryDelayMs * attempt;
+        console.log(`Mengulang koneksi ke WhatsApp Web dalam ${waitTime / 1000} detik... (Pastikan koneksi internet aktif)`);
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
+      } else {
+        if (isNetworkError) {
+          throw new Error(
+            `Koneksi internet terputus atau domain web.whatsapp.com tidak dapat dijangkau (${errMsg}). Periksa koneksi internet/Wi-Fi Anda, lalu jalankan ulang bot.`
+          );
+        }
+        throw err;
+      }
+    }
+  }
+
+  throw new Error('Gagal memulai WhatsApp Bot setelah beberapa percobaan.');
 }
